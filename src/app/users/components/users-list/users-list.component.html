@@ -1,0 +1,19 @@
+<div class="container">
+  <button
+    class="margin-auto"
+    mat-raised-button
+    color="accent"
+    (click)="openDialog()"
+  >
+    Добавить пользователя
+  </button>
+  <div class="users__list">
+    <ng-container *ngFor="let user of usersService.users">
+      <app-user-card
+        (click)="openDialog(user)"
+        [user]="user"
+        (deleteUser)="onDeleteUser($event)"
+      ></app-user-card>
+    </ng-container>
+  </div>
+</div>
