@@ -7,8 +7,8 @@ import { User } from '../interfaces/user.interface';
   providedIn: 'root',
 })
 export class UsersApiService {
-  url = environment.apiUrl + '/users';
-  constructor(public http: HttpClient) {}
+  private readonly url = environment.apiUrl + '/users';
+  constructor(private http: HttpClient) {}
 
   getUsers() {
     return this.http.get<User[]>(this.url);
