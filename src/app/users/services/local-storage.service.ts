@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { User } from '../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -6,15 +7,16 @@ import { Injectable } from '@angular/core';
 export class LocalStorageService {
   constructor() {}
 
-  getItem(token: string): string | null {
-    return localStorage.getItem(token);
+  getItem(token: string) {
+    const item = localStorage.getItem(token);
+    return item ? JSON.parse(item) : null;
   }
-  setItem(token: string, data: string) {
-    localStorage.setItem(token, data);
-    return data;
+
+  setItem(token: string, data: User[]) {
+    localStorage.setItem(token, JSON.stringify(data));
   }
-  removeItem(token: string): boolean {
+
+  removeItem(token: string) {
     localStorage.removeItem(token);
-    return true;
   }
 }

@@ -2,12 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UsersApiService } from '../../services/users-api.service';
 import { UsersService } from '../../services/users.service';
-import { Subject, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Subject, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { User } from '../../shared/user.interface';
+import { User } from '../../interfaces/user.interface';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { tick } from '@angular/core/testing';
 
 @Component({
   selector: 'app-users-list',
@@ -27,14 +28,11 @@ export class UsersListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const currentUsers = this.localStorageService.getItem('currentUsers');
     if (currentUsers) {
-      this.usersService.setUsers(JSON.parse(currentUsers));
+      this.usersService.setUsers(currentUsers);
       this.usersApiService
         .getUsers()
         .subscribe((users) =>
-          this.localStorageService.setItem(
-            'currentUsers',
-            JSON.stringify(users)
-          )
+          this.localStorageService.setItem('currentUsers', users)
         );
     }
   }
@@ -46,10 +44,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
 
   onDeleteUser(id: number) {
     this.usersService.deleteUser(id);
-    this.localStorageService.setItem(
-      'currentUsers',
-      JSON.stringify(this.usersService.users)
-    );
+    this.localStorageService.setItem('currentUsers', this.usersService.users);
   }
 
   openDialog(user?: User) {
@@ -67,7 +62,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
         }
         this.localStorageService.setItem(
           'currentUsers',
-          JSON.stringify(this.usersService.users)
+          this.usersService.users
         );
       }
     });
