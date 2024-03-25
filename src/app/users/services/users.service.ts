@@ -21,18 +21,11 @@ export class UsersService {
     this.users = this.users.filter((user) => user.id !== id);
   }
 
-  updateUser(updatedUser: User): boolean {
-    console.log(updatedUser);
-    const index = this.users.findIndex((user) => user.id === updatedUser.id);
-    if (index !== -1) {
-      // Создаем новый объект данных пользователя
-      const newUser = { ...updatedUser };
-      // Обновляем пользователя в массиве пользователей
-      this.users[index] = newUser;
-      console.log(newUser);
-      return true;
-    } else {
-      return false;
-    }
+  updateUser(updatedUser: User): void {
+    const updatedUsers = this.users.map((user) =>
+      user.id === updatedUser.id ? updatedUser : user
+    );
+
+    this.users = updatedUsers;
   }
 }
