@@ -1,14 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { UsersApiService } from '../../services/users-api.service';
 import { UsersService } from '../../services/users.service';
-import { Subject, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil, tap } from 'rxjs/operators';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { User } from '../../interfaces/user.interface';
 import { LocalStorageService } from '../../services/local-storage.service';
-import { tick } from '@angular/core/testing';
+import { Store, select } from '@ngrx/store';
+import { LoadUsersAction } from '../../store/actions/loadUsers.actions';
+import { loadingSelector, usersSelector } from '../../store/selectors';
 
 @Component({
   selector: 'app-users-list',
@@ -17,54 +18,47 @@ import { tick } from '@angular/core/testing';
 })
 export class UsersListComponent implements OnInit, OnDestroy {
   destroy$ = new Subject();
-
+  loading$?: Observable<boolean>;
+  users$?: Observable<User[]>;
   constructor(
     public dialogRef: MatDialog,
     public usersService: UsersService,
-    private usersApiService: UsersApiService,
-    private localStorageService: LocalStorageService
+    private store: Store
   ) {}
 
   ngOnInit(): void {
-    const currentUsers = this.localStorageService.getItem('currentUsers');
-    if (currentUsers) {
-      this.usersService.setUsers(currentUsers);
-      this.usersApiService
-        .getUsers()
-        .subscribe((users) =>
-          this.localStorageService.setItem('currentUsers', users)
-        );
-    }
+    this.users$ = this.store.pipe(select(usersSelector));
+    this.store.dispatch(LoadUsersAction());
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next('');
+    this.destroy$.next(true);
     this.destroy$.complete();
   }
 
-  onDeleteUser(id: number) {
+  onDeleteUser(id: number): void {
     this.usersService.deleteUser(id);
-    this.localStorageService.setItem('currentUsers', this.usersService.users);
   }
 
-  openDialog(user?: User) {
+  openCreateEditDialog(user?: User): void {
     const dialogRef = this.dialogRef.open(CreateEditUserComponent, {
       width: '400px',
       data: user ? { ...user } : null,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        if (user) {
-          this.usersService.updateUser(result);
-        } else {
-          this.usersService.addUser(result);
-        }
-        this.localStorageService.setItem(
-          'currentUsers',
-          this.usersService.users
-        );
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(
+        takeUntil(this.destroy$),
+        tap((result) => {
+          if (!result) return;
+          if (user) {
+            this.usersService.updateUser(result);
+          } else {
+            this.usersService.addUser(result);
+          }
+        })
+      )
+      .subscribe();
   }
 }

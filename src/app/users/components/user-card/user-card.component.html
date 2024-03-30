@@ -1,8 +1,8 @@
 <div class="user">
   <mat-card>
-    <mat-card-content>
-      <mat-card-subtitle
-        ><p>{{ user.id }}</p></mat-card-subtitle
+    <mat-card-header>
+      <mat-card-title
+        ><p>{{ user.id }}</p></mat-card-title
       >
       <mat-card-subtitle>
         <p>{{ user.name }}</p></mat-card-subtitle
@@ -13,15 +13,15 @@
       <mat-card-subtitle>
         <p>{{ user.username }}</p></mat-card-subtitle
       >
-      <mat-card-actions>
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="onDeleteUser(user.id)"
-        >
-          Delete
-        </button></mat-card-actions
+    </mat-card-header>
+    <mat-card-actions align="end">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="userService.deleteUser(user.id)"
       >
-    </mat-card-content>
+        Delete
+      </button>
+    </mat-card-actions>
   </mat-card>
 </div>
