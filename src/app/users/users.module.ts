@@ -8,6 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './shared/material.module';
 import { CreateEditUserComponent } from './components/create-edit-user/create-edit-user.component';
 import { StoreModule } from '@ngrx/store';
+import { reducers } from './store/reducer';
 const routes: Routes = [
   {
     path: 'users',
@@ -28,6 +29,7 @@ const routes: Routes = [
     FormsModule,
     NoopAnimationsModule,
     MaterialModule,
+    StoreModule.forFeature('users', reducers),
   ],
   exports: [RouterModule],
 })

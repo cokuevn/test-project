@@ -9,6 +9,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { User } from '../../interfaces/user.interface';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { tick } from '@angular/core/testing';
+import { Store } from '@ngrx/store';
+import { LoadUsersAction } from '../../store/actions/users.action';
 
 @Component({
   selector: 'app-users-list',
@@ -22,10 +24,12 @@ export class UsersListComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialog,
     public usersService: UsersService,
     private usersApiService: UsersApiService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
+    this.store.dispatch(LoadUsersAction());
     const currentUsers = this.localStorageService.getItem('currentUsers');
     if (currentUsers) {
       this.usersService.setUsers(currentUsers);
