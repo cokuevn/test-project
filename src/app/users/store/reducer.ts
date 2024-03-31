@@ -53,6 +53,9 @@ const loadUsersReducer = createReducer(
   }))
 );
 
-export function reducers(state: UsersStateInterface, action: Action) {
+export function reducers(
+  state: UsersStateInterface | undefined,
+  action: Action
+) {
   return loadUsersReducer(state, action);
 }
