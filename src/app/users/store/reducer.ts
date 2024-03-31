@@ -1,15 +1,15 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { UserStateInterface } from '../interfaces/userState';
+import { UsersStateInterface } from '../interfaces/usersState.interface';
 import {
+  AddUserAction,
+  DeleteUserAction,
   LoadUsersAction,
   LoadUsersFailureAction,
   LoadUsersSuccesAction,
-  addUser,
-  deleteUser,
-  updateUser,
-} from './actions/loadUsers.actions';
+  UpdateUserAction,
+} from './actions/users.actions';
 
-const initialState: UserStateInterface = {
+const initialState: UsersStateInterface = {
   users: [],
   loading: false,
   erorr: null,
@@ -19,14 +19,14 @@ const loadUsersReducer = createReducer(
   initialState,
   on(
     LoadUsersAction,
-    (state): UserStateInterface => ({
+    (state): UsersStateInterface => ({
       ...state,
       loading: true,
     })
   ),
   on(
     LoadUsersSuccesAction,
-    (state, { users }): UserStateInterface => ({
+    (state, { users }): UsersStateInterface => ({
       ...state,
       users,
       loading: false,
@@ -37,22 +37,22 @@ const loadUsersReducer = createReducer(
     error,
     loading: false,
   })),
-  on(addUser, (state, { user }) => ({
+  on(AddUserAction, (state, { user }) => ({
     ...state,
     users: [...state.users, user],
   })),
 
-  on(updateUser, (state, { user }) => ({
+  on(UpdateUserAction, (state, { user }) => ({
     ...state,
     users: state.users.map((u) => (u.id === user.id ? user : u)),
   })),
 
-  on(deleteUser, (state, { id }) => ({
+  on(DeleteUserAction, (state, { id }) => ({
     ...state,
     users: state.users.filter((u) => u.id !== id),
   }))
 );
 
-export function reducers(state: UserStateInterface, action: Action) {
+export function reducers(state: UsersStateInterface, action: Action) {
   return loadUsersReducer(state, action);
 }

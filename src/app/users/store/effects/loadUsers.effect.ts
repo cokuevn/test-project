@@ -8,7 +8,7 @@ import {
   LoadUsersAction,
   LoadUsersFailureAction,
   LoadUsersSuccesAction,
-} from '../actions/loadUsers.actions';
+} from '../actions/users.actions';
 
 @Injectable()
 export class UserEffects {

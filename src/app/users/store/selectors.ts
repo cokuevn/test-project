@@ -1,8 +1,8 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { UserStateInterface } from '../interfaces/userState';
+import { UsersStateInterface } from '../interfaces/usersState.interface';
 
 export const userFeatureSelector =
-  createFeatureSelector<UserStateInterface>('user');
+  createFeatureSelector<UsersStateInterface>('users');
 
 export const loadingSelector = createSelector(
   userFeatureSelector,

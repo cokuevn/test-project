@@ -14,19 +14,19 @@ export const LoadUsersFailureAction = createAction(
   props<{ error: any }>()
 );
 
-export const addUser = createAction(
+export const AddUserAction = createAction(
   ActionTypes.ADD_USER,
   props<{ user: User }>()
 );
 
 // Действие для обновления пользователя
-export const updateUser = createAction(
+export const UpdateUserAction = createAction(
   ActionTypes.UPDATE_USER,
   props<{ user: User }>()
 );
 
 // Действие для удаления пользователя
-export const deleteUser = createAction(
+export const DeleteUserAction = createAction(
   ActionTypes.DELETE_USER,
   props<{ id: number }>()
 );

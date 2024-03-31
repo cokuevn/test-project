@@ -31,7 +31,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    StoreModule.forFeature('user', reducers),
+    StoreModule.forFeature('users', reducers),
     EffectsModule.forFeature([UserEffects]),
     ReactiveFormsModule,
     FormsModule,

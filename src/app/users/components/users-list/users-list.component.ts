@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { User } from '../../interfaces/user.interface';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { Store, select } from '@ngrx/store';
-import { LoadUsersAction } from '../../store/actions/loadUsers.actions';
+import { LoadUsersAction } from '../../store/actions/users.actions';
 import { loadingSelector, usersSelector } from '../../store/selectors';
 
 @Component({
