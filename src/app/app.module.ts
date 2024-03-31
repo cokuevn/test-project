@@ -20,7 +20,7 @@ import { reducers } from './users/store/reducer';
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    StoreModule.forRoot({}),
+    StoreModule.forRoot({ users: reducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     EffectsModule.forRoot([]),
   ],
