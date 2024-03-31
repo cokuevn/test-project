@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './shared/material.module';
 import { CreateEditUserComponent } from './components/create-edit-user/create-edit-user.component';
+import { StoreModule } from '@ngrx/store';
 const routes: Routes = [
   {
     path: 'users',
@@ -15,7 +16,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [UserCardComponent, UsersListComponent, CreateEditUserComponent],
+  declarations: [
+    UserCardComponent,
+    UsersListComponent,
+    CreateEditUserComponent,
+  ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
