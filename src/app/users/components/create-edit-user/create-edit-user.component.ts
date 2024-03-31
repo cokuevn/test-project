@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { User } from '../../interfaces/user.interface';
@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
   templateUrl: './create-edit-user.component.html',
   styleUrl: './create-edit-user.component.scss',
 })
-export class CreateEditUserComponent {
+export class CreateEditUserComponent implements OnInit {
   isEdit!: boolean;
   userForm!: FormGroup;
   users!: User[];
@@ -23,17 +23,24 @@ export class CreateEditUserComponent {
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) private readonly data: User
   ) {
+    this.isEdit = !!data;
+    this.initialaxeForm();
+  }
+  ngOnInit(): void {
     this.store.pipe(select(usersSelector)).subscribe((users) => {
       this.users = users;
     });
-    this.isEdit = !!data;
-    this.userForm = fb.group({
-      id: [data ? data.id : createId(this.users)],
-      name: [data ? data.name : '', Validators.required],
-      username: [data ? data.username : '', Validators.required],
-      email: [data ? data.email : '', Validators.required],
+  }
+
+  initialaxeForm(): void {
+    this.userForm = this.fb.group({
+      id: [this.data ? this.data.id : createId(this.users)],
+      name: [this.data ? this.data.name : '', Validators.required],
+      username: [this.data ? this.data.username : '', Validators.required],
+      email: [this.data ? this.data.email : '', Validators.required],
     });
   }
+
   onCancel(): void {
     this.dialog.close();
   }

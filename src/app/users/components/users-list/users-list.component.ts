@@ -36,10 +36,6 @@ export class UsersListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onDeleteUser(id: number): void {
-    this.usersService.deleteUser(id);
-  }
-
   openCreateEditDialog(user?: User): void {
     const dialogRef = this.dialogRef.open(CreateEditUserComponent, {
       width: '400px',
