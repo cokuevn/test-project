@@ -6,7 +6,7 @@ import { UsersService } from '../../services/users.service';
 import { createId } from '../../utilities/createId.utilities';
 import { Store, select } from '@ngrx/store';
 import { usersSelector } from '../../store/selectors';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Component({
   selector: 'app-create-edit-user',
@@ -27,9 +27,14 @@ export class CreateEditUserComponent implements OnInit {
     this.initialaxeForm();
   }
   ngOnInit(): void {
-    this.store.pipe(select(usersSelector)).subscribe((users) => {
-      this.users = users;
-    });
+    this.store
+      .pipe(
+        select(usersSelector),
+        tap((users) => {
+          this.users = users;
+        })
+      )
+      .subscribe();
   }
 
   initialaxeForm(): void {
