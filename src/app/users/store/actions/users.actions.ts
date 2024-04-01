@@ -19,13 +19,11 @@ export const AddUserAction = createAction(
   props<{ user: User }>()
 );
 
-// Действие для обновления пользователя
 export const UpdateUserAction = createAction(
   ActionTypes.UPDATE_USER,
   props<{ user: User }>()
 );
 
-// Действие для удаления пользователя
 export const DeleteUserAction = createAction(
   ActionTypes.DELETE_USER,
   props<{ id: number }>()
