@@ -25,7 +25,6 @@ export class CreateEditUserComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private readonly data: User
   ) {
     this.isEdit = !!data;
-    this.initialaxeForm();
   }
   ngOnInit(): void {
     this.store
@@ -33,12 +32,13 @@ export class CreateEditUserComponent implements OnInit {
         select(usersSelector),
         tap((users) => {
           this.users = users;
+          this.initialazeForm();
         })
       )
       .subscribe();
   }
 
-  initialaxeForm(): void {
+  initialazeForm(): void {
     this.userForm = this.fb.group({
       id: [this.data ? this.data.id : createId(this.users)],
       name: [this.data ? this.data.name : '', Validators.required],
