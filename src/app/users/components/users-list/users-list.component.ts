@@ -18,7 +18,6 @@ import { loadingSelector, usersSelector } from '../../store/selectors';
 })
 export class UsersListComponent implements OnInit, OnDestroy {
   destroy$ = new Subject();
-  loading$?: Observable<boolean>;
   users$?: Observable<User[]>;
   constructor(
     public dialogRef: MatDialog,
@@ -39,7 +38,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
   openCreateEditDialog(user?: User): void {
     const dialogRef = this.dialogRef.open(CreateEditUserComponent, {
       width: '400px',
-      data: user ? { ...user } : null,
+      data: user,
     });
 
     dialogRef
