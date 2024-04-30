@@ -9,10 +9,15 @@ import { MaterialModule } from './shared/material.module';
 import { CreateEditUserComponent } from './components/create-edit-user/create-edit-user.component';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './store/reducer';
+import { FormComponent } from './components/form/form.component';
 const routes: Routes = [
   {
     path: 'users',
     component: UsersListComponent,
+  },
+  {
+    path: 'form',
+    component: FormComponent,
   },
 ];
 
@@ -21,6 +26,7 @@ const routes: Routes = [
     UserCardComponent,
     UsersListComponent,
     CreateEditUserComponent,
+    FormComponent,
   ],
   imports: [
     CommonModule,

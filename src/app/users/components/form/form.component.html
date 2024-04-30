@@ -1,0 +1,12 @@
+<p>form works!</p>
+<form [formGroup]="myForm">
+  <mat-label>name</mat-label>
+  <input matInput formControlName="name" />
+  <mat-label>email</mat-label>
+  <input matInput formControlName="email" />
+</form>
+
+<p>{{ myForm.get("name")?.valid }}, {{ myForm.get("name")?.errors | json }}</p>
+<p *ngIf="myForm.hasError('required', 'name')">обязатльно вводит имя</p>
+<p *ngIf="myForm.hasError('minlength', 'name')">мин кол-во символов 3</p>
+<button (click)="myForm.get('name')?.patchValue('1111')">ok</button>
