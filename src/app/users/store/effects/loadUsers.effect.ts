@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 
 import { UsersApiService } from '../../services/users-api.service';
 import {
+  DeleteUserAction,
   LoadUsersAction,
   LoadUsersFailureAction,
   LoadUsersSuccesAction,
