@@ -1,5 +1,6 @@
 import {
   Component,
+  inject,
   Inject,
   OnChanges,
   OnInit,
@@ -17,28 +18,36 @@ import { createId } from '../../utils/createId';
   templateUrl: './create-edit-user.component.html',
   styleUrl: './create-edit-user.component.scss',
 })
-export class CreateEditUserComponent implements OnChanges {
+export class CreateEditUserComponent {
   isEdit!: boolean;
   userForm!: FormGroup;
   users!: User[];
   constructor(
-    private userService: UsersService,
-    public dialog: MatDialogRef<CreateEditUserComponent>,
-    public fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: User
+    private usersService: UsersService,
+    private dialog: MatDialogRef<CreateEditUserComponent>,
+    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) private readonly data: User
   ) {
     this.isEdit = !!data;
-    this.userForm = fb.group({
-      id: [data ? data.id : createId(this.users)],
-      name: [data ? data.name : '', Validators.required],
-      username: [data ? data.username : '', Validators.required],
-      email: [data ? data.email : '', Validators.required],
-    });
   }
-  ngOnChanges(changes: SimpleChanges): void {
-    this.userService.users$
-      .pipe(tap((users) => ((this.users = users), console.log(this.users))))
+  ngOnInit(): void {
+    this.usersService.users$
+      .pipe(
+        tap((users) => {
+          this.users = users;
+          this.initialazeForm();
+        })
+      )
       .subscribe();
+  }
+
+  initialazeForm(): void {
+    this.userForm = this.fb.group({
+      id: [this.data ? this.data.id : createId(this.users)],
+      name: [this.data ? this.data.name : '', Validators.required],
+      username: [this.data ? this.data.username : '', Validators.required],
+      email: [this.data ? this.data.email : '', Validators.required],
+    });
   }
 
   onCancel(): void {
