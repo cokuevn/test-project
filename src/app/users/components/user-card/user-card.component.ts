@@ -10,5 +10,5 @@ import { UsersService } from '../../services/users.service';
 export class UserCardComponent {
   constructor(public userService: UsersService) {}
   @Input({ required: true })
-  user!: User;
+  public user!: User;
 }
