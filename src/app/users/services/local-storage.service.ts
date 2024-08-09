@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { User } from '../interfaces/user.interface';
 import { Observable, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LocalStorageService {
-  constructor() {}
+  private destroyRef: DestroyRef = inject(DestroyRef);
 
   getItem(token: string) {
     const item = localStorage.getItem(token);
@@ -15,7 +16,10 @@ export class LocalStorageService {
 
   setItem(token: string, data: Observable<User[]>) {
     data
-      .pipe(tap((users) => localStorage.setItem(token, JSON.stringify(users))))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((users) => localStorage.setItem(token, JSON.stringify(users)))
+      )
       .subscribe();
   }
 

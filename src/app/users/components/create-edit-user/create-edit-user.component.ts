@@ -1,27 +1,23 @@
-import {
-  Component,
-  inject,
-  Inject,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { User } from '../../interfaces/user.interface';
 import { UsersService } from '../../services/users.service';
-import { tap } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 import { createId } from '../../utils/createId';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-create-edit-user',
   templateUrl: './create-edit-user.component.html',
   styleUrl: './create-edit-user.component.scss',
 })
-export class CreateEditUserComponent {
-  isEdit!: boolean;
-  userForm!: FormGroup;
-  users!: User[];
+export class CreateEditUserComponent implements OnInit {
+  public isEdit!: boolean;
+  protected userForm!: FormGroup;
+  private users!: User[];
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private usersService: UsersService,
     private dialog: MatDialogRef<CreateEditUserComponent>,
@@ -33,9 +29,14 @@ export class CreateEditUserComponent {
   ngOnInit(): void {
     this.usersService.users$
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap((users) => {
           this.users = users;
           this.initialazeForm();
+        }),
+        catchError((error) => {
+          console.error('Error initialazeForm:', error);
+          return of(null);
         })
       )
       .subscribe();

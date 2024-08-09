@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class UsersService {
   private usersSubject = new BehaviorSubject<User[]>([]);
-  users$: Observable<User[]> = this.usersSubject.asObservable();
+  public users$: Observable<User[]> = this.usersSubject.asObservable();
 
   setUsers(users: User[]) {
     this.usersSubject.next(users);

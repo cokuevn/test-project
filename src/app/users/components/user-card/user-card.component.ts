@@ -8,9 +8,9 @@ import { User } from '../../interfaces/user.interface';
 })
 export class UserCardComponent {
   @Input({ required: true })
-  user!: User;
+  public user!: User;
   @Output()
-  deleteUser = new EventEmitter<number>();
+  public deleteUser = new EventEmitter<number>();
 
   onDeleteUser(id: number) {
     this.deleteUser.emit(id);

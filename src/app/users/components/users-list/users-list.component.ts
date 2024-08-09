@@ -1,7 +1,7 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { UsersApiService } from '../../services/users-api.service';
 import { UsersService } from '../../services/users.service';
-import { Observable, Subject, catchError, of, tap } from 'rxjs';
+import { Observable, catchError, of, tap } from 'rxjs';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
 import { MatDialog } from '@angular/material/dialog';
 import { User } from '../../interfaces/user.interface';
