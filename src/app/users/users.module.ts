@@ -6,10 +6,11 @@ import { UserCardComponent } from './components/user-card/user-card.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateEditUserComponent } from './components/create-edit-user/create-edit-user.component';
-import { StoreModule } from '@ngrx/store';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 const routes: Routes = [
   {
     path: 'users',
@@ -32,6 +33,8 @@ const routes: Routes = [
     MatDialogModule,
     MatFormFieldModule,
     MatCardModule,
+    MatButtonModule,
+    MatInputModule,
   ],
   exports: [RouterModule],
 })

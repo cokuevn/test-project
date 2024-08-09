@@ -1,7 +1,7 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { UsersApiService } from '../../services/users-api.service';
 import { UsersService } from '../../services/users.service';
-import { Subject, catchError, of, tap } from 'rxjs';
+import { Observable, Subject, catchError, of, tap } from 'rxjs';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
 import { MatDialog } from '@angular/material/dialog';
 import { User } from '../../interfaces/user.interface';
@@ -14,7 +14,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class UsersListComponent implements OnInit {
   destroyRef = inject(DestroyRef);
-  users!: User[];
+  users$: Observable<User[]> = this.usersService.users$;
   constructor(
     public dialogRef: MatDialog,
     public usersService: UsersService,
@@ -23,12 +23,6 @@ export class UsersListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.usersService.users$
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((users) => (this.users = users))
-      )
-      .subscribe();
     const currentUsers = this.localStorageService.getItem('currentUsers');
     if (!currentUsers) {
       this.usersApiService
@@ -37,7 +31,7 @@ export class UsersListComponent implements OnInit {
           takeUntilDestroyed(this.destroyRef),
           tap({
             next: (users) => {
-              this.localStorageService.setItem('currentUsers', users);
+              this.localStorageService.setItem('currentUsers', this.users$);
               this.usersService.setUsers(users);
             },
           }),
@@ -57,7 +51,8 @@ export class UsersListComponent implements OnInit {
 
   onDeleteUser(id: number) {
     this.usersService.deleteUser(id);
-    this.localStorageService.setItem('currentUsers', this.users);
+
+    this.localStorageService.setItem('currentUsers', this.users$);
   }
 
   openDialog(user?: User) {
@@ -76,7 +71,7 @@ export class UsersListComponent implements OnInit {
           } else {
             this.usersService.addUser(result);
           }
-          this.localStorageService.setItem('currentUsers', this.users);
+          this.localStorageService.setItem('currentUsers', this.users$);
         }),
         catchError((error) => {
           console.error('Error create or edit:', error);
