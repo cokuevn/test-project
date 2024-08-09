@@ -1,21 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { UsersApiService } from '../../services/users-api.service';
 import { UsersService } from '../../services/users.service';
-import { Subject, tap } from 'rxjs';
+import { Subject, catchError, of, tap } from 'rxjs';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
 import { MatDialog } from '@angular/material/dialog';
 import { User } from '../../interfaces/user.interface';
 import { LocalStorageService } from '../../services/local-storage.service';
-import { Store } from '@ngrx/store';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-users-list',
   templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.scss'],
 })
-export class UsersListComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject();
-
+export class UsersListComponent implements OnInit {
+  destroyRef = inject(DestroyRef);
+  users!: User[];
   constructor(
     public dialogRef: MatDialog,
     public usersService: UsersService,
@@ -24,22 +23,30 @@ export class UsersListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.usersService.users$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((users) => (this.users = users))
+      )
+      .subscribe();
     const currentUsers = this.localStorageService.getItem('currentUsers');
     if (!currentUsers) {
       this.usersApiService
         .getUsers()
         .pipe(
+          takeUntilDestroyed(this.destroyRef),
           tap({
             next: (users) => {
               this.localStorageService.setItem('currentUsers', users);
               this.usersService.setUsers(users);
             },
-            error: (error) => {
-              console.error(
-                'Ошибка при получении данных о пользователях:',
-                error
-              );
-            },
+          }),
+          catchError((error) => {
+            console.error(
+              'Error: Ошибка при получении данных полтзователя',
+              error
+            );
+            return of(null);
           })
         )
         .subscribe();
@@ -48,14 +55,9 @@ export class UsersListComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next('');
-    this.destroy$.complete();
-  }
-
   onDeleteUser(id: number) {
     this.usersService.deleteUser(id);
-    this.localStorageService.setItem('currentUsers', this.usersService.users);
+    this.localStorageService.setItem('currentUsers', this.users);
   }
 
   openDialog(user?: User) {
@@ -64,13 +66,23 @@ export class UsersListComponent implements OnInit, OnDestroy {
       data: user,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (user) {
-        this.usersService.updateUser(result);
-      } else {
-        this.usersService.addUser(result);
-      }
-      this.localStorageService.setItem('currentUsers', this.usersService.users);
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((result) => {
+          if (user) {
+            this.usersService.updateUser(result);
+          } else {
+            this.usersService.addUser(result);
+          }
+          this.localStorageService.setItem('currentUsers', this.users);
+        }),
+        catchError((error) => {
+          console.error('Error create or edit:', error);
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 }

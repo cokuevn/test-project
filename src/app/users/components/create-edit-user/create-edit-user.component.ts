@@ -20,11 +20,7 @@ export class CreateEditUserComponent {
   ) {
     this.isEdit = !!data;
     this.userForm = fb.group({
-      id: [
-        data
-          ? data.id
-          : this.userService.users[this.userService.users.length - 1].id + 1,
-      ],
+      id: [data ? data.id : ''],
       name: [data ? data.name : '', Validators.required],
       username: [data ? data.username : '', Validators.required],
       email: [data ? data.email : '', Validators.required],

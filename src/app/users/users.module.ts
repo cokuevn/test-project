@@ -5,19 +5,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { UserCardComponent } from './components/user-card/user-card.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule } from './shared/material.module';
 import { CreateEditUserComponent } from './components/create-edit-user/create-edit-user.component';
 import { StoreModule } from '@ngrx/store';
-import { reducers } from './store/reducer';
-import { FormComponent } from './components/form/form.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
 const routes: Routes = [
   {
     path: 'users',
     component: UsersListComponent,
-  },
-  {
-    path: 'form',
-    component: FormComponent,
   },
 ];
 
@@ -26,7 +22,6 @@ const routes: Routes = [
     UserCardComponent,
     UsersListComponent,
     CreateEditUserComponent,
-    FormComponent,
   ],
   imports: [
     CommonModule,
@@ -34,8 +29,9 @@ const routes: Routes = [
     ReactiveFormsModule,
     FormsModule,
     NoopAnimationsModule,
-    MaterialModule,
-    StoreModule.forFeature('users', reducers),
+    MatDialogModule,
+    MatFormFieldModule,
+    MatCardModule,
   ],
   exports: [RouterModule],
 })
