@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnDestroy,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { UsersApiService } from '../../services/users-api.service';
 import { UsersService } from '../../services/users.service';
 import { Observable, Subject } from 'rxjs';
@@ -10,15 +16,15 @@ import { LocalStorageService } from '../../services/local-storage.service';
 import { Store, select } from '@ngrx/store';
 import { LoadUsersAction } from '../../store/actions/users.actions';
 import { loadingSelector, usersSelector } from '../../store/selectors';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-users-list',
   templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.scss'],
 })
-export class UsersListComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject();
+export class UsersListComponent implements OnInit {
   users$?: Observable<User[]>;
+  destroyRef: DestroyRef = inject(DestroyRef);
   constructor(
     public dialogRef: MatDialog,
     public usersService: UsersService,
@@ -30,11 +36,6 @@ export class UsersListComponent implements OnInit, OnDestroy {
     this.store.dispatch(LoadUsersAction());
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.complete();
-  }
-
   openCreateEditDialog(user?: User): void {
     const dialogRef = this.dialogRef.open(CreateEditUserComponent, {
       width: '400px',
@@ -44,7 +45,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
     dialogRef
       .afterClosed()
       .pipe(
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
         tap((result) => {
           if (!result) return;
           if (user) {
