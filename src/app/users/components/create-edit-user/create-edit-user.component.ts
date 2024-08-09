@@ -23,10 +23,9 @@ export class CreateEditUserComponent implements OnInit {
     private dialog: MatDialogRef<CreateEditUserComponent>,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) private readonly data: User
-  ) {
-    this.isEdit = !!data;
-  }
+  ) {}
   ngOnInit(): void {
+    this.isEdit = !!this.data;
     this.usersService.users$
       .pipe(
         takeUntilDestroyed(this.destroyRef),
